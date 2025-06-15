@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore a curated collection of AI, audio, avatar, and coding tools at Webkit By Ahsan Labs.">
+  <title>Webkit By Ahsan Labs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a1122, #1e0b3d, #2e1a5c);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      scroll-behavior: smooth;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="none"/%3E%3Ccircle cx="10" cy="10" r="1" fill="rgba(167,139,250,0.2)"/%3E%3Ccircle cx="50" cy="50" r="1.5" fill="rgba(236,72,153,0.2)"/%3E%3Ccircle cx="90" cy="90" r="1" fill="rgba(167,139,250,0.2)"/%3E%3C/svg%3E');
+      opacity: 0.1;
+      z-index: -1;
+      animation: drift 20s linear infinite;
+    }
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(10, 17, 34, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .navbar a {
+      position: relative;
+    }
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+      transition: width 0.3s ease;
+    }
+    .navbar a:hover::after {
+      width: 100%;
+    }
+    .card {
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+      background: rgba(10, 17, 34, 0.85);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      opacity: 0.9;
+    }
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+      border-color: #a78bfa;
+      opacity: 1;
+    }
+    .search-container {
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 30;
+    }
+    .search-container:focus-within {
+      transform: scale(1.03);
+    }
+    .suggestions {
+      background: rgba(10, 17, 34, 0.95);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      z-index: 40;
+    }
+    .suggestion-item {
+      transition: all 0.3s ease;
+      color: #d1d5db;
+      position: relative;
+    }
+    .suggestion-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(167, 139, 250, 0.3), rgba(236, 72, 153, 0.3));
+      transition: width 0.3s ease;
+    }
+    .suggestion-item:hover::before {
+      width: 100%;
+    }
+    .suggestion-item:hover {
+      color: #f1f5f9;
+      transform: translateX(6px);
+    }
+    @keyframes drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    @keyframes ghostlyFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { text-shadow: 0 0 5px rgba(167, 139, 250, 0.5); }
+      50% { text-shadow: 0 0 15px rgba(167, 139, 250, 0.8); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .ghostly-fade {
+      animation: ghostlyFade 0.8s ease forwards;
+    }
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+    .disabled-link {
+      color: #6b7280;
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+    .visit-link:hover, .category-tag:hover {
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .action-button {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      position: relative;
+    }
+    .action-button:hover {
+      transform: scale(1.05);
+    }
+    .section-title {
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .back-to-top {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .category-tag {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .category-tag:hover {
+      transform: scale(1.05);
+    }
+    .tooltip {
+      position: relative;
+    }
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: rgba(10, 17, 34, 0.95);
+      color: #e2e8f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 50;
+    }
+    .tooltip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-12px);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .gradient-bg {
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+    }
+    .gradient-bg-hover:hover {
+      background: linear-gradient(90deg, #7c3aed, #db2777);
+    }
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 1rem;
+      }
+      .navbar-links {
+        display: none;
+      }
+      .navbar-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10, 17, 34, 0.95);
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .card {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .search-container input {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+      }
+      .suggestions {
+        max-height: 12rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .category-tags {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+    }
+    @media (min-width: 1024px) {
+      .contact-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a78bfa'%3E%3Cpath d='M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm2 2v14h10V5H7zm2 2h6v10H9V7z'/%3E%3C/svg%3E">
+</head>
+<body class="flex flex-col items-center">
+  <nav class="navbar fixed top-0 left-0 w-full z-50 py-4 px-6 sm:px-8">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="#home" class="text-2xl font-extrabold gradient-text">Webkit</a>
+      <div class="flex items-center space-x-4 sm:space-x-6">
+        <div id="navbar-links" class="navbar-links flex space-x-4 sm:space-x-6">
+          <a href="#home" class="text-gray-300 hover:text-purple-300 transition" aria-label="Home">Home</a>
+          <a href="#about" class="text-gray-300 hover:text-purple-300 transition" aria-label="About">About</a>
+          <a href="#contact" class="text-gray-300 hover:text-purple-300 transition" aria-label="Contact">Contact</a>
+        </div>
+        <button id="hamburger" class="sm:hidden text-gray-300 hover:text-purple-300 transition" aria-label="Toggle Menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="w-full max-w-7xl pt-24 pb-12 px-4 sm:px-6 md:px-8">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-8 gradient-text drop-shadow-xl ghostly-fade pulse-glow">
+      Webkit By Ahsan Labs
+    </h1>
+    <div class="search-container relative mb-6 mx-auto max-w-3xl flex items-center gap-2">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search categories..."
+        class="w-full p-3 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-800 shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-600 text-gray-100 placeholder-gray-500 text-sm sm:text-base"
+        aria-label="Search categories"
+      />
+      <button id="clearSearch" class="hidden px-3 py-2 rounded-lg bg-slate-800 text-gray-300 hover:text-purple-300" aria-label="Clear search">✕</button>
+      <ul id="suggestions" class="suggestions absolute w-full rounded-xl max-h-60 overflow-y-auto hidden mt-1 top-full" role="listbox"></ul>
+    </div>
+    <div id="category-tags" class="category-tags flex justify-center flex-wrap gap-2 mb-6"></div>
+    <div id="results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative">
+      <div id="loading" class="hidden absolute inset-0 flex items-center justify-center bg-slate-900/50">
+        <div class="spinner border-4 border-t-purple-600 rounded-full w-8 h-8"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="w-full max-w-7xl py-12 px-4 sm:px-6 md:px-8 bg-slate-900/20">
+    <div class="mb-12 ghostly-fade">
+      <h2 class="section-title text-2xl sm:text-3xl font-bold mb-4 pulse-glow">About Me</h2>
+      <p class="text-gray-300 text-sm sm:text-base">
+        I'm Ahsan — a passionate coder, creative video editor, and the founder of Ahsan Labs, a tech-driven platform focused on innovation, automation, and problem-solving. At just 18, I’ve already begun building tools, apps, and platforms that combine the power of code and creativity to make life easier for users, freelancers, and small business owners.
+
+From coding smart bots and digital marketing apps to editing engaging PUBG montages and tech content, I believe in learning by doing and turning ideas into reality. Whether it’s web development, automation, app creation, or visual storytelling, I aim to solve real-world problems with technology.
+      </p>
+    </div>
+    <div class="mb-12 ghostly-fade" style="animation-delay: 0.2s;">
+      <h2 class="section-title text-2xl sm:text-3xl font-bold mb-4 pulse-glow">About Ahsan Labs</h2>
+      <p class="text-gray-300 text-sm sm:text-base">
+        Ahsan Labs is a next-gen tech platform built by young creator and developer Ahsan. Our mission is simple: make technology easier, smarter, and more powerful for everyone — especially beginners, freelancers, and small business owners.
+
+We focus on creating smart tools, apps, bots, and websites that solve real-world problems. Whether it’s an all-in-one digital marketing app, smart trading bots, or tools for editors, developers, and creators — Ahsan Labs is here to innovate.
+
+At Ahsan Labs, we combine code, creativity, and purpose. Every project we build is designed to save time, reduce complexity, and help people do more with less effort. We're not just another tech name — we’re a community of ideas and execution, driven by passion and possibility.
+
+Built by a beginner, for beginners — powering the future one line of code at a time.
+      </p>
+    </div>
+  </section>
+
+  <section id="contact" class="w-full max-w-7xl py-12 px-4 sm:px-6 md:px-8 bg-slate-900/20">
+    <h2 class="section-title text-2xl sm:text-3xl font-bold mb-8 text-center pulse-glow">Connect With Us</h2>
+    <div class="contact-container flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+      <a href="https://ngl.link/ahsanlabs" target="_blank"class="action-button tooltip px-6 py-3 rounded-lg gradient-bg gradient-bg-hover text-white font-semibold text-center transition" data-tooltip="Message the Owner" aria-label="Message the Owner">Message Owner</a>
+      <a href="https://whatsapp.com/channel/0029Vb6cRL43GJOqdGUq4q0Q" target="_blank"class="action-button tooltip px-6 py-3 rounded-lg gradient-bg gradient-bg-hover text-white font-semibold text-center transition" data-tooltip="Join WhatsApp Channel" aria-label="Join WhatsApp Channel">Join WhatsApp Channel</a>
+      <button onclick="sharePage()" class="action-button tooltip px-6 py-3 rounded-lg gradient-bg gradient-bg-hover text-white font-semibold text-center transition" data-tooltip="Share via WhatsApp" aria-label="Share via WhatsApp">Share via WhatsApp</button>
+    </div>
+  </section>
+
+  <footer class="footer w-full bg-slate-900/90 py-8 px-4 sm:px-6 md:px-8 mt-12">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-gray-400 text-sm">
+      <div>
+        <p class="font-semibold text-purple-300 mb-2">Webkit By Ahsan Labs</p>
+        <p>© 2025 Ahsan Labs. All rights reserved.</p>
+        <p>Tool list curated by <a href="https://whatsapp.com/channel/0029VajAS4eJZg42Nnz92402" target="_blank" rel="noopener noreferrer" class="hover:text-purple-300 transition">Faarid Hussnain</a></p>
+      </div>
+      <div>
+        <p class="font-semibold text-purple-300 mb-2">Navigation</p>
+        <div class="flex flex-col space-y-1">
+          <a href="#home" class="hover:text-purple-300 transition" aria-label="Home">Home</a>
+          <a href="#about" class="hover:text-purple-300 transition" aria-label="About">About</a>
+          <a href="#contact" class="hover:text-purple-300 transition" aria-label="Contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p class="font-semibold text-purple-300 mb-2">Connect</p>
+        <div class="flex space-x-4">
+          <a href="https://ngl.link/ahsanlabs" target="_blank"class="hover:text-purple-300 transition" aria-label="Twitter">NgLink</a>
+          <a href="https://whatsapp.com/channel/0029Vb6cRL43GJOqdGUq4q0Q" target="_blank"class="hover:text-purple-300 transition" aria-label="LinkedIn">Whatsapp Channel</a>
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <button id="back-to-top" class="back-to-top fixed bottom-6 right-6 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition opacity-0 transform translate-y-4" aria-label="Back to Top">
+    ↑
+  </button>
+
+  <script>
+    const websites = [
+      { name: "topoexport.com", description: "Creates 2D and 3D topographic maps.", categories: ["Mapping Tools", "3D Design", "Design Tools"], link: "https://topoexport.com" },
+      { name: "lingohut.com", description: "Free interactive language lessons.", categories: ["Language Learning", "Educational Tools"], link: "https://www.lingohut.com" },
+      { name: "snazzymaps.com", description: "Custom map styles for web and apps.", categories: ["Mapping Tools", "Design Tools", "Web Development"], link: "https://snazzymaps.com" },
+      { name: "emergent.sh", description: "AI generates code, apps, and websites.", categories: ["AI Tools", "Web Development", "App Development"], link: null },
+      { name: "kiddoworksheet.com", description: "Printable worksheets for kids.", categories: ["Educational Tools", "Children’s Learning"], link: "https://kiddoworksheets.com" },
+      { name: "gemini 3d drawing", description: "Converts sketches to 3D models.", categories: ["AI Tools", "3D Design", "AI Graphics"], link: null },
+      { name: "magic eraser", description: "AI removes objects from images.", categories: ["AI Tools", "Image Editing", "AI Graphics"], link: "https://www.magiceraser.io" },
+      { name: "3dtunning.com", description: "Virtual car customization in 3D.", categories: ["Automotive Design", "3D Design", "Customization Tools"], link: "https://www.3dtuning.com" },
+      { name: "stockimg.com", description: "AI generates thumbnails and logos.", categories: ["AI Tools", "AI Graphics", "Graphic Design"], link: "https://stockimg.ai" },
+      { name: "symbolab.com", description: "Solves math equations with steps.", categories: ["Educational Tools", "Math Tools"], link: "https://www.symbolab.com" },
+      { name: "radiocast.com", description: "Streams global public radio.", categories: ["Streaming Media", "Audio Tools"], link: null },
+      { name: "flourishstudio.com", description: "Turns spreadsheets into charts.", categories: ["Data Visualization", "Design Tools"], link: "https://flourish.studio" },
+      { name: "labs.google", description: "AI tools for language learning.", categories: ["Language Learning", "AI Tools", "Educational Tools"], link: "https://labs.google" },
+      { name: "meshyai.com", description: "AI creates 3D models and animations.", categories: ["AI Tools", "3D Design", "AI Animation"], link: "https://www.meshy.ai" },
+      { name: "myfridgefood.com", description: "Recipes from available ingredients.", categories: ["Recipe Tools", "Cooking Tools"], link: "https://myfridgefood.com" },
+      { name: "reddyai.com", description: "AI builds responsive websites.", categories: ["AI Tools", "Web Development", "AI Web Design"], link: null },
+      { name: "recraftai.com", description: "AI generates professional logos.", categories: ["AI Tools", "AI Graphics", "Graphic Design"], link: "https://www.recraft.ai" },
+      { name: "typingbird.com", description: "Gamified typing speed practice.", categories: ["Typing Tools", "Educational Tools", "Productivity Tools"], link: null },
+      { name: "pixie.haus", description: "Creates pixel art and animations.", categories: ["Pixel Art", "AI Graphics", "Animation Tools"], link: null },
+      { name: "animejs.com", description: "JavaScript for web animations.", categories: ["Web Animation", "Web Development", "Design Tools"], link: "https://animejs.com" },
+      { name: "staying.fun.com", description: "Visualizes data structures.", categories: ["Educational Tools", "Coding Education", "Data Visualization"], link: null },
+      { name: "stirlingpdf.io", description: "All-in-one PDF editor.", categories: ["PDF Tools", "Document Editing"], link: "https://www.stirlingpdf.io" },
+      { name: "reactbit.js", description: "Animated React components.", categories: ["Web Animation", "Web Development", "UI Design"], link: null },
+      { name: "pngimg.com", description: "Transparent PNG image repository.", categories: ["Image Resources", "Graphic Design"], link: "https://pngimg.com" },
+      { name: "instructables.com", description: "DIY project guides.", categories: ["DIY Tools", "Crafting Tools", "Educational Tools"], link: "https://www.instructables.com" },
+      { name: "manualslib.com", description: "Library of product manuals.", categories: ["Reference Tools", "Product Support"], link: "https://www.manualslib.com" },
+      { name: "autodraw.com", description: "AI polishes rough sketches.", categories: ["AI Tools", "AI Graphics", "Drawing Tools"], link: "https://www.autodraw.com" },
+      { name: "remove.photos", description: "AI removes photo backgrounds.", categories: ["AI Tools", "Image Editing", "AI Graphics"], link: "https://remove.photos" },
+      { name: "deepagant.abascus.ai", description: "AI generates small tools.", categories: ["AI Tools", "App Development", "Automation Tools"], link: null },
+      { name: "colorifyai.com", description: "AI creates coloring pages.", categories: ["AI Tools", "Educational Tools", "AI Graphics"], link: null },
+      { name: "appalchemyai.com", description: "AI builds small apps.", categories: ["AI Tools", "App Development", "Automation Tools"], link: null },
+      { name: "codedex.com", description: "Gamified coding lessons.", categories: ["Coding Education", "Educational Tools", "Gamified Learning"], link: "https://www.codedex.io" },
+      { name: "keybr.com", description: "Improves typing with exercises.", categories: ["Typing Tools", "Productivity Tools"], link: "https://www.keybr.com" },
+      { name: "mount-everst3d.com", description: "3D view of Mount Everest.", categories: ["Virtual Exploration", "3D Design", "Educational Tools"], link: "https://www.mounteverest3d.com" },
+      { name: "luminabrush.ai", description: "AI enhances photo editing.", categories: ["AI Tools", "AI Graphics", "Image Editing"], link: null },
+      { name: "humanbenchmark.com", description: "Tests cognitive skills.", categories: ["Cognitive Testing", "Educational Tools"], link: "https://humanbenchmark.com" },
+      { name: "imagineexplainer.com", description: "AI explains academic topics.", categories: ["AI Tools", "Educational Tools", "Reference Tools"], link: null },
+      { name: "higgsfield.ai", description: "AI adds motion to images.", categories: ["AI Tools", "AI Animation", "Video Editing"], link: null },
+      { name: "huggingface.co", description: "AI for image-to-3D models.", categories: ["AI Tools", "3D Design", "Machine Learning"], link: "https://huggingface.co" },
+      { name: "enzostvs-deepsite.com", description: "AI generates websites.", categories: ["AI Tools", "Web Development", "AI Web Design"], link: null },
+      { name: "formia.so", description: "Converts logos to 3D.", categories: ["AI Tools", "3D Design", "AI Graphics"], link: null },
+      { name: "carcarekiosk.com", description: "Car repair video tutorials.", categories: ["Automotive Repair", "Educational Tools"], link: "https://www.carcarekiosk.com" },
+      { name: "gama.app", description: "AI creates documents and websites.", categories: ["AI Tools", "Content Creation", "Web Development"], link: null },
+      { name: "virtualvacation.com", description: "Virtual travel experiences.", categories: ["Virtual Exploration", "Travel Tools"], link: "https://virtualvacation.us" },
+      { name: "10015.io", description: "Collection of online tools.", categories: ["All-in-One Tools", "Image Editing"], link: "https://10015.io" },
+      { name: "databutton.com", description: "AI generates data tools.", categories: ["AI Tools", "Data Visualization", "Automation Tools"], link: "https://www.databutton.com" },
+      { name: "productioncreate.com", description: "VFX assets for media.", categories: ["VFX Tools", "3D Design", "Media Assets"], link: null },
+      { name: "immersityai.com", description: "AI animates static images.", categories: ["AI Tools", "AI Animation", "Image Editing"], link: null },
+      { name: "tooooools.app", description: "Applies artistic image effects.", categories: ["Image Editing", "AI Graphics", "Design Tools"], link: null },
+      { name: "wolframalpha.com", description: "Solves math and science queries.", categories: ["Educational Tools", "Math Tools", "Reference Tools"], link: "https://www.wolframalpha.com" },
+      { name: "typingclub.com", description: "Free typing lessons and games.", categories: ["Typing Tools", "Educational Tools", "Productivity Tools"], link: "https://www.typingclub.com" },
+      { name: "krea.ai", description: "AI generates images and videos.", categories: ["AI Tools", "AI Graphics", "AI Video"], link: "https://www.krea.ai" },
+      { name: "chef.convex.dev", description: "AI builds custom tools.", categories: ["AI Tools", "App Development", "Automation Tools"], link: null },
+      { name: "drivenlisten.com", description: "Virtual city driving with audio.", categories: ["Virtual Exploration", "Virtual Reality"], link: null },
+      { name: "tabletopy.com", description: "RPG sound effect generator.", categories: ["Audio Tools", "Gaming Tools"], link: null },
+      { name: "geeksforgeeks.com", description: "Programming tutorials and problems.", categories: ["Coding Education", "Educational Tools"], link: "https://www.geeksforgeeks.org" },
+      { name: "loecsen.com", description: "Teaches travel phrases with audio.", categories: ["Language Learning", "Educational Tools"], link: "https://www.loecsen.com" },
+      { name: "coddy.tech", description: "Coding projects for all ages.", categories: ["Coding Education", "Educational Tools", "Children’s Learning"], link: "https://coddy.tech" },
+      { name: "zoo.dev", description: "AI generates CAD models.", categories: ["AI Tools", "CAD Design", "3D Design"], link: null },
+      { name: "edx.org", description: "Free courses from top universities.", categories: ["Online Education", "Educational Tools"], link: "https://www.edx.org" },
+      { name: "quickref.me", description: "Programming cheat sheets.", categories: ["Coding Education", "Reference Tools"], link: "https://quickref.me" },
+      { name: "chefgpt.xyz", description: "AI creates custom recipes.", categories: ["AI Tools", "Recipe Tools", "Cooking Tools"], link: "https://www.chefgpt.xyz" },
+      { name: "vidu.com", description: "AI generates videos from prompts.", categories: ["AI Tools", "AI Video", "Video Editing"], link: "https://vidu.studio" },
+      { name: "musclewiki.com", description: "Personalized workout plans.", categories: ["Fitness Tools", "Educational Tools"], link: "https://musclewiki.com" },
+      { name: "chunkbase.com", description: "Maps Minecraft world structures.", categories: ["Gaming Tools", "Mapping Tools"], link: "https://www.chunkbase.com" },
+      { name: "kittl.com", description: "Customizable design templates.", categories: ["Graphic Design", "Design Tools"], link: "https://www.kittl.com" },
+      { name: "picopilot.com", description: "AI enhances product images.", categories: ["AI Tools", "AI Graphics", "Product Photography"], link: null },
+      { name: "classcentral.com", description: "Aggregates free online courses.", categories: ["Online Education", "Educational Tools"], link: "https://www.classcentral.com" },
+      { name: "oldmapsonline.org", description: "Archives historical maps.", categories: ["Historical Resources", "Educational Tools"], link: "https://www.oldmapsonline.org" },
+      { name: "modulify.ai", description: "AI builds websites without coding.", categories: ["AI Tools", "Web Development", "AI Web Design"], link: null },
+      { name: "iloveimg.com", description: "Edits images with compression tools.", categories: ["Image Editing", "Design Tools"], link: "https://www.iloveimg.com" },
+      { name: "insmind.com", description: "AI creates cartoon avatars.", categories: ["AI Tools", "AI Graphics", "Image Editing"], link: "https://www.insmind.com" },
+      { name: "collov.ai", description: "AI visualizes interior designs.", categories: ["AI Tools", "Interior Design", "AI Graphics"], link: "https://www.collov.ai" },
+      { name: "openapi.com", description: "AI APIs for language and images.", categories: ["AI Tools", "Machine Learning", "API Services"], link: "https://www.openai.com" },
+      { name: "lottieflies.com", description: "Lightweight web animations.", categories: ["Web Animation", "Design Tools", "Animation Tools"], link: "https://lottiefiles.com" },
+      { name: "unstuckystydy.com", description: "AI answers academic questions.", categories: ["AI Tools", "Educational Tools", "Reference Tools"], link: null },
+      { name: "bolt.new", description: "AI generates websites from prompts.", categories: ["AI Tools", "Web Development", "AI Web Design"], link: "https://bolt.new" },
+      { name: "startmycar.com", description: "Guides car repairs.", categories: ["Automotive Repair", "Educational Tools"], link: "https://www.startmycar.com" },
+      { name: "scribehow.com", description: "Animated UI components.", categories: ["Web Animation", "UI Design", "Design Tools"], link: "https://scribehow.com" },
+      { name: "unscreen.com", description: "AI removes video backgrounds.", categories: ["AI Tools", "Video Editing", "AI Video"], link: "https://www.unscreen.com" },
+      { name: "nim.video", description: "AI generates videos from prompts.", categories: ["AI Tools", "AI Video", "Video Editing"], link: null },
+      { name: "ChatGPT", description: "A versatile AI assistant for writing, coding, research, and problem-solving.", categories: ["AI Chatbot"], link: "https://chat.openai.com" },
+      { name: "RecCloud", description: "Converts speech to text with high accuracy for meetings and videos.", categories: ["Transcription"], link: "https://reccloud.com" },
+      { name: "MidJourney", description: "Creates stunning AI-generated art from text prompts via Discord.", categories: ["Image Generation"], link: "https://www.midjourney.com" },
+      { name: "Synthesia", description: "Produces professional videos with AI avatars from text scripts.", categories: ["Video Generation"], link: "https://www.synthesia.io" },
+      { name: "Soundraw", description: "Generates royalty-free music tailored to video or project needs.", categories: ["Music Creation"], link: "https://soundraw.io" },
+      { name: "Fliki", description: "Turns text into TikTok-ready videos with AI voiceovers and visuals.", categories: ["Video Creation"], link: "https://fliki.ai" },
+      { name: "Starry.ai", description: "Generates unique AI avatars for profiles and digital branding.", categories: ["Image Generation"], link: "https://www.starry.ai" },
+      { name: "SlidesAI", description: "Transforms text into polished Google Slides presentations.", categories: ["Presentation Creation"], link: "https://www.slides.ai" },
+      { name: "PicWish", description: "AI-powered tool for background removal and photo enhancement.", categories: ["Photo Editing"], link: "https://www.picwish.com" },
+      { name: "Pictory.ai", description: "Converts scripts and blogs into engaging videos with AI automation.", categories: ["Video Editing"], link: "https://pictory.ai" },
+      { name: "Relume", description: "AI-assisted tool for creating modern, responsive website designs.", categories: ["Web Design"], link: "https://www.relume.io" },
+      { name: "sizeasy.com", description: "Visualizes and compares product sizes.", categories: ["Product Visualization", "Design Tools"], link: "https://www.sizeasy.com" },
+      { name: "whatfontis.com", description: "Determines font names from images.", categories: ["Font Identification", "Design Tools"], link: "https://www.whatfontis.com" },
+      { name: "fontsquirrel.com", description: "Offers free fonts for personal and commercial use.", categories: ["Font Resources", "Design Tools"], link: "https://www.fontsquirrel.com" },
+      { name: "regex.info", description: "Extracts hidden data from photographs.", categories: ["Image Analysis", "Photography Tools"], link: null },
+      { name: "tineye.com", description: "Performs reverse image searches online.", categories: ["Reverse Image Search", "Image Analysis"], link: "https://www.tineye.com" },
+      { name: "iwantmyname.com", description: "Searches domains across all TLDs.", categories: ["Domain Search", "Web Development"], link: "https://iwantmyname.com" },
+      { name: "tabbloid.com", description: "Converts favorite blogs into downloadable PDFs.", categories: ["Content Conversion", "Productivity Tools"], link: null },
+      { name: "join.me", description: "Enables screen sharing over the web.", categories: ["Screen Sharing", "Collaboration Tools"], link: "https://www.join.me" },
+      { name: "onlineocr.net", description: "Recognizes text from scanned PDFs and images.", categories: ["OCR Tools", "Document Editing"], link: "https://www.onlineocr.net" },
+      { name: "flightstats.com", description: "Tracks flight statuses worldwide.", categories: ["Travel Tools", "Flight Tracking"], link: "https://www.flightstats.com" },
+      { name: "wetransfer.com", description: "Shares large files securely.", categories: ["File Sharing", "Productivity Tools"], link: "https://wetransfer.com" },
+      { name: "wordle.net", description: "Summarizes text with tag clouds.", categories: ["Text Summarization", "Data Visualization"], link: null },
+      { name: "bubbl.us", description: "Creates mind-maps for brainstorming.", categories: ["Mind Mapping", "Productivity Tools"], link: "https://bubbl.us" },
+      { name: "BusterAI", description: "Is your text written by a human or AI? Uncover the truth with BusterAI.", categories: ["AI Detection", "AI Tools"], link: "https://www.buster.ai/" },
+      { name: "Detect GPT", description: "Find out if the pages you browse contain AI-generated content.", categories: ["AI Detection", "AI Tools"], link: "https://detectgpt.com/" },
+      { name: "GLTR AI Detection", description: "Catching a Unicorn with GLTR: A tool to detect automatically generated text.", categories: ["AI Detection", "AI Tools"], link: "http://gltr.io/" },
+      { name: "GPTZero", description: "GPTZero turns the very technologies used to build ChatGPT around — to detect AI.", categories: ["AI Detection", "AI Tools"], link: "https://gptzero.me/" },
+      { name: "OpenAI Classifier", description: "A classifier trained to distinguish between AI-written and human-written text.", categories: ["AI Detection", "AI Tools"], link: "https://openai.com/blog/new-ai-classifier-for-indicating-ai-written-text" },
+      { name: "Originality AI", description: "A Plagiarism Checker and AI Detector Built for Serious Content Publishers.", categories: ["AI Detection", "AI Tools"], link: "https://www.originality.ai/" },
+      { name: "Writer", description: "AI Content Detector!", categories: ["AI Detection", "AI Tools"], link: "https://writer.com/" },
+      { name: "Copyleaks", description: "Paste your content below, and this will tell you if any of it has been AI-generated within seconds with exceptional accuracy.", categories: ["AI Detection", "AI Tools"], link: "https://copyleaks.com/ai-content-detector" },
+      { name: "ZeroGPT", description: "Detect chatGPT content for Free, simple way & High accuracy. OpenAI detection tool.", categories: ["AI Detection", "AI Tools"], link: "https://zerogpt.com/" },
+      { name: "Adobe Audition", description: "Create, mix and design sound effects with the industry’s best digital audio editing software.", categories: ["Audio", "Audio Editing"], link: "https://www.adobe.com/products/audition.html" },
+      { name: "Adobe Podcast", description: "AI-powered audio recording and editing, all on the web based!", categories: ["Audio", "Audio Editing"], link: "https://podcast.adobe.com/" },
+      { name: "AI Mastering", description: "AI Mastering is a tool that can easily improve your music. It is possible to balance the loudness and the dynamic range by our powerful limiter.", categories: ["Audio", "Audio Editing"], link: "https://aimastering.com/" },
+      { name: "Audio Alter", description: "A collection of easy-to-use web tools for all your audio files.", categories: ["Audio", "Audio Editing"], link: "https://audioalter.com/" },
+      { name: "Audo Studio", description: "Automatically removes background noise and enhances your speech using the latest advancement in audio processing and artificial intelligence.", categories: ["Audio", "Audio Editing"], link: "https://audo.ai/" },
+      { name: "Cleanvoice", description: "Cleanvoice is an artificial intelligence which removes filler sounds, stuttering and mouth sounds from your podcast or audio recording.", categories: ["Audio", "Audio Editing"], link: "https://cleanvoice.ai/" },
+      { name: "Krisp", description: "Krisp’s AI removes background voices, noises and echo from all your calls, giving you peace of mind.", categories: ["Audio", "Audio Editing"], link: "https://krisp.ai/" },
+      { name: "Lalal AI", description: "Extract vocal, accompaniment and various instruments from any audio.", categories: ["Audio", "Audio Editing"], link: "https://lalal.ai/" },
+      { name: "Nonoisy", description: "AI for podcast audio editing.", categories: ["Audio", "Audio Editing"], link: "https://nonoisy.com/" },
+      { name: "Podcast AI", description: "The AI-generated podcast.", categories: ["Audio", "Audio Editing"], link: "https://podcast.ai/" },
+      { name: "Podcastle", description: "Studio-quality recording, AI-powered editing, and seamless exporting – all in a single web-based platform.", categories: ["Audio", "Audio Editing"], link: "https://podcastle.ai/" },
+      { name: "VoiceMod", description: "Free Real-Time Voice Changer.", categories: ["Audio", "Audio Editing"], link: "https://www.voicemod.net/" },
+      { name: "AI Time Machine", description: "Create and share mind-blowing AI avatars.", categories: ["Avatars", "AI Tools"], link: "https://www.myheritage.com/ai-time-machine" },
+      { name: "AIVatar", description: "Create unlimited unique AI-generated magic avatars of yourself.", categories: ["Avatars", "AI Tools"], link: "https://www.aivatar.ai/" },
+      { name: "Anime AI", description: "Become an anime hero with AI.", categories: ["Avatars", "AI Tools"], link: "https://animeai.app/" },
+      { name: "Arti Pics", description: "Arti.pics is AI-powered avatar maker. It allows you to upload a few photos of yourself and generates more than 200 cool-looking avatars in different styles.", categories: ["Avatars", "AI Tools"], link: "https://arti.pics/" },
+      { name: "Avatar AI", description: "Create your own AI-generated avatars.", categories: ["Avatars", "AI Tools"], link: "https://avatarai.me/" },
+      { name: "Avatarify", description: "Elevate your online presence with personalized avatars.", categories: ["Avatars", "AI Tools"], link: "https://avatarify.ai/" },
+      { name: "Beb", description: "Make your own avatars using AI.", categories: ["Avatars", "AI Tools"], link: "https://beb.ai/" },
+      { name: "Dreampic AI", description: "Take your personal brand to the next level. Create stunning, personalized images of yourself in a variety of styles.", categories: ["Avatars", "AI Tools"], link: "https://dreampic.ai/" },
+      { name: "Gemsouls", description: "Gemsouls is an artificial intelligence platform powering virtual characters and their connections to the real world.", categories: ["Avatars", "AI Tools"], link: "https://www.mygemsouls.com/" },
+      { name: "HairGen AI", description: "See your hairline lowered with AI right now.", categories: ["Avatars", "AI Tools"], link: "https://www.hairgen.ai/" },
+      { name: "HairStyle AI", description: "Try new hairstyles with the power of AI.", categories: ["Avatars", "AI Tools"], link: "https://hairstyle.ai/" },
+      { name: "HeroPack", description: "Make gaming avatars with AI, inspired by video games.", categories: ["Avatars", "AI Tools"], link: "https://www.heropack.me/" },
+      { name: "In3D", description: "Turn people into realistic avatars, customizable avatars created with a phone camera within a minute.", categories: ["Avatars", "AI Tools"], link: "https://in3d.io/" },
+      { name: "Lensa", description: "Transform your selfies into customised portraits.", categories: ["Avatars", "AI Tools"], link: "https://lensa.com/" },
+      { name: "Magic AI Avatars", description: "Get 200+ custom avatars made by artificial intelligence.", categories: ["Avatars", "AI Tools"], link: "https://magicaiavatars.com/" },
+      { name: "Neuroflash", description: "Generate any image or avatar of yourself using AI.", categories: ["Avatars", "AI Tools"], link: "https://neuroflash.com/blog/create-ai-avatars-the-new-alternative-to-lensa/" },
+      { name: "PhotoAI", description: "Create AI photos of yourself.", categories: ["Avatars", "AI Tools"], link: "https://photoai.me/" },
+      { name: "Photoshot", description: "Generate avatars that perfectly capture your unique style.", categories: ["Avatars", "AI Tools"], link: "https://photoshot.app/" },
+      { name: "PictoDream", description: "Generate any images of yourself (or another person) in any style or setting using a simple text description.", categories: ["Avatars", "AI Tools"], link: "https://pictodream.com/" },
+      { name: "Profile Picture AI", description: "Create your perfect profile picture with AI. Choose Your Character, Create Magical Avatars.", categories: ["Avatars", "AI Tools"], link: "https://www.profilepicture.ai/" },
+      { name: "ReadyPlayer Me", description: "Cross-game Avatar Platform for the Metaverse.", categories: ["Avatars", "AI Tools"], link: "https://readyplayer.me/" },
+      { name: "Reface", description: "Express yourself online with AI avatar.", categories: ["Avatars", "AI Tools"], link: "https://reface.ai/" },
+      { name: "Unrealme", description: "Get AI generated images of you.", categories: ["Avatars", "AI Tools"], link: "https://unrealme.io/" },
+      { name: "Vana", description: "Portrait by Vana is a generative art studio that can create self-portraits of you in infinite styles.", categories: ["Avatars", "AI Tools"], link: "https://www.vana.com/" },
+      { name: "AskNow", description: "Ask Anyone, Anything.", categories: ["Chat", "AI Chatbot"], link: "https://asknow.ai/" },
+      { name: "AskThee", description: "Ever wanted to ask a question to a big thinker, artist or scientist? now is your chance.", categories: ["Chat", "AI Chatbot"], link: "https://askthee.vercel.app/" },
+      { name: "Chai", description: "Chat with AI.", categories: ["Chat", "AI Chatbot"], link: "https://chai.ml/" },
+      { name: "Character AI", description: "Character AI lets you create Characters and talk to them.", categories: ["Chat", "Chatting", "AI Chatbot"], link: "https://www.character.ai/" },
+      { name: "Context", description: "Context is your AI-powered assistant for learning from your favorite websites, e-books, podcasts, videos, and more.", categories: ["Chat", "AI Chatbot"], link: "https://context.gg/" },
+      { name: "Didi AI", description: "Didi AI is a digital diviner that can be consulted to answer questions based on artificial intelligence.", categories: ["Chat", "AI Chatbot"], link: "https://didiai.vercel.app/" },
+      { name: "Hello History", description: "Chat with AI generated historical figures.", categories: ["Chat", "AI Chatbot"], link: "https://hellohistory.ai/" },
+      { name: "DreamGen Role Play", description: "Chat with characters, create your own AI girlfriend, explore fantasy realms, and more.", categories: ["Chatting", "AI Chatbot"], link: "https://dreamgen.com/role-playing" },
+      { name: "Intimate", description: "It allows fully unfiltered NSFW conversations and sexting roleplay, which feels incredibly real because of its advanced AI Chat model.", categories: ["Chatting", "AI Chatbot"], link: "https://myintimate.app/" },
+      { name: "Holoworld", description: "From chatting with favorite characters to exploring new creations, Holoworld offers extensive AI-assisted features for streaming, engaging, and earning possibilities.", categories: ["Chatting", "AI Chatbot"], link: "https://www.holoworldai.com/" },
+      { name: "Risu AI", description: "RisuAI, or Risu for short, is an cross platform AI chatting software / web application with powerful features such as multiple API support, assets in the chat, regex functions and more.", categories: ["Chatting", "AI Chatbot"], link: "https://github.com/kwaroran/RisuAI" },
+      { name: "Sakura", description: "Chat with engaging AI characters.", categories: ["Chatting", "AI Chatbot"], link: "https://www.sakura.fm/" },
+      { name: "AskCodi", description: "AskCodi is made keeping in mind the needs of developers to avoid redundant tasks, therefore resulting in less time spent on development and more time to execute.", categories: ["Coding Tools", "Programming"], link: "https://askcodi.com/" },
+      { name: "Bito", description: "Generate Amazing Code/code comments, 10x faster with ChatGPT.", categories: ["Coding Tools", "Programming"], link: "https://bito.ai/" },
+      { name: "BlackBox AI", description: "BLACKBOX is your AI-Powered Coding Assistant so you can {Code} 10X Faster and Better.", categories: ["Coding Tools", "Programming"], link: "https://www.useblackbox.io/" },
+      { name: "Buildt", description: "Find, Generate & Replace Anything In Your Code.", categories: ["Coding Tools", "Programming"], link: "https://www.buildt.ai/" },
+      { name: "Clippy AI", description: "Clippy AI is a simple wrapper around OpenAI Codex. It allows you to send Codex your current file as well as some instructions in plain-text English.", categories: ["Coding Tools", "Programming"], link: "https://github.com/corbt/clippy-ai" },
+      { name: "Clippy VSCode", description: "It shows you your mistakes! It's annoying! it moves!", categories: ["Coding Tools", "Programming"], link: "https://github.com/CodedotAl/code-clippy-vscode" },
+      { name: "Code Snippets", description: "Turn Your Questions Into Code, with ChatGPT!", categories: ["Coding Tools", "Programming"], link: "https://codesnippets.ai/" },
+      { name: "CodeSquire", description: "Turn your thoughts into code! AI code writing assistant for data scientists, engineers, and analysts.", categories: ["Coding Tools", "Programming"], link: "https://codesquire.ai/" },
+      { name: "CodeAssist", description: "CodeAssist is an AI assistant / chatbot / copilot for programming. It generates, changes, completes the code and answers questions.", categories: ["Coding Tools", "Programming"], link: "https://plugins.jetbrains.com/plugin/20085-codeassist" },
+      { name: "CodeGeeX", description: "A large-scale multilingual code generation model with 13 billion parameters, pre-trained on a large code corpus of more than 20 programming languages.", categories: ["Coding Tools", "Programming"], link: "https://github.com/THUDM/CodeGeeX" },
+      { name: "Codeium", description: "The modern coding superpower.", categories: ["Coding Tools", "Programming"], link: "https://codeium.com/" },
+      { name: "Codex", description: "Codex interpret simple commands in natural language and execute them on the user’s behalf—making it possible to build a natural language interface to existing applications.", categories: ["Coding Tools", "Programming"], link: "https://codex.so/" },
+      { name: "Continual", description: "Continual is an operational AI platform for the modern data stack. Build predictive models that never stop improving without complex engineering.", categories: ["Coding Tools", "Programming"], link: "https://continualai.org/" },
+      { name: "Copilot", description: "GitHub Copilot uses the OpenAI Codex to suggest code and entire functions in real-time, right from your editor.", categories: ["Coding Tools", "Programming"], link: "https://github.com/features/copilot" },
+      { name: "Debuild", description: "Code your web app in seconds.", categories: ["Coding Tools", "Programming"], link: "https://debuild.co/" },
+      { name: "Duino Code Generator", description: "Let's generate code for Arduino.", categories: ["Coding Tools", "Programming"], link: "https://duinocodegenerator.com/" },
+      { name: "Fig AI", description: "Translate English → Bash commands in any shell.", categories: ["Coding Tools", "Programming"], link: "https://fig.io/" },
+      { name: "Fronty", description: "Get the HTML CSS code of your project in no time! AI-Powered tool to create a website in few minutes.", categories: ["Coding Tools", "Programming"], link: "https://fronty.com/" },
+      { name: "GitHub Next", description: "Write code without the keyboard! Difficulty typing? Use your voice to code without spelling things out by talking with GitHub Copilot.", categories: ["Coding Tools", "Programming"], link: "https://githubnext.com/projects/copilot-voice/" },
+      { name: "Kodezi AI", description: "Let Kodezi auto generate/correct/comment/optimize your code in seconds.", categories: ["Coding Tools", "Programming"], link: "https://kodezi.com/" },
+      { name: "Lookup", description: "Import your data, ask questions in plain english, and get answers instantly with the power of AI.", categories: ["Coding Tools", "Programming"], link: "https://lookup.ai/" },
+      { name: "Maverick", description: "Delivering the best code completion on your local machine without reaching out to any APIs or knowledge bases.", categories: ["Coding Tools", "Programming"], link: "https://marketplace.visualstudio.com/items?itemName=YurtsAI.maverick" },
+      { name: "Mutable", description: "Build fast with production quality using AI Accelerated Software Development.", categories: ["Coding Tools", "Programming"], link: "https://mutable.ai/" },
+      { name: "Programming Helper", description: "Generate code just by typing a text description. AI will create the code for you.", categories: ["Coding Tools", "Programming"], link: "https://www.programming-helper.com/" },
+      { name: "SourceAI", description: "AI-Powered Code Generator.", categories: ["Coding Tools", "Programming"], link: "https://sourceai.dev/" },
+      { name: "Spellbox", description: "SpellBox uses artificial intelligence to create the code you need from simple prompts.", categories: ["Coding Tools", "Programming"], link: "https://spellbox.app/" },
+      { name: "Stenography", description: "Finally. Automatic Documentation.", categories: ["Coding Tools", "Programming"], link: "https://stenography.dev/" },
+      { name: "Tabnine", description: "AI assistant for software developers. Code faster with whole-line & full-function code completions.", categories: ["Coding Tools", "Programming"], link: "https://www.tabnine.com/" },
+      { name: "Teleporthq", description: "TeleportHQ is the collaborative front-end platform with integrated UI development and content modelling tools.", categories: ["Coding Tools", "Programming"], link: "https://teleporthq.io/" },
+      { name: "What the Diff", description: "Your AI-powered code review assistant.", categories: ["Coding Tools", "Programming"], link: "https://whatthediff.ai/" }
+    ];
+
+    const searchInput = document.getElementById("searchInput");
+    const suggestions = document.getElementById("suggestions");
+    const results = document.getElementById("results");
+    const categoryTags = document.getElementById("category-tags");
+    const loading = document.getElementById("loading");
+    const backToTop = document.getElementById("back-to-top");
+    const hamburger = document.getElementById("hamburger");
+    const navbarLinks = document.getElementById("navbar-links");
+    const clearSearch = document.getElementById("clearSearch");
+
+    // Get unique categories for suggestions and tags
+    const allCategories = [...new Set(websites.flatMap(site => site.categories || []))];
+
+    // Track displayed count for "Load More"
+    let displayedCount = 9;
+
+    // Render category tags
+    function renderCategoryTags() {
+      const prioritizedCategories = [
+        "AI Chatbot", "Transcription", "Image Generation", "Video Generation",
+        "Presentation Creation", "Web Design", "AI Detection", "Audio", "Avatars",
+        "Chat", "Chatting", "Coding Tools", "Programming"
+      ];
+      prioritizedCategories.forEach(category => {
+        if (allCategories.includes(category)) {
+          const span = document.createElement("span");
+          span.className = "category-tag px-3 py-1 rounded-full bg-slate-900/80 text-gray-300 text-xs sm:text-sm hover:text-purple-300";
+          span.textContent = category;
+          span.setAttribute("aria-label", `Filter by ${category}`);
+          span.addEventListener("click", () => {
+            searchInput.value = category;
+            filterResults({ type: "category", value: category });
+            suggestions.classList.add("hidden");
+          });
+          categoryTags.appendChild(span);
+        }
+      });
+    }
+
+    // Display results in the UI
+    function displayResults(sites, limit = null) {
+      loading.classList.remove("hidden");
+      results.classList.add("opacity-50");
+      setTimeout(() => {
+        results.innerHTML = "";
+        if (sites.length === 0) {
+          results.innerHTML = '<p class="text-gray-400 text-center text-lg col-span-full">No results found.</p>';
+        } else {
+          const displayLimit = limit !== null ? Math.min(sites.length, limit) : sites.length;
+          sites.slice(0, displayLimit).forEach((site, index) => {
+            const div = document.createElement("div");
+            div.className = "card p-4 sm:p-6 rounded-xl shadow-lg";
+            div.style.animationDelay = `${index * 0.1}s`;
+            div.classList.add("ghostly-fade");
+            div.innerHTML = `
+              <h2 class="text-xl sm:text-2xl font-bold text-purple-400">${site.name}</h2>
+              <p class="text-gray-300 mt-2 text-sm sm:text-base">${site.description}</p>
+              <p class="text-xs sm:text-sm text-gray-400 mt-2">Categories: <span class="text-pink-400">${(site.categories || []).join(", ")}</span></p>
+              ${site.link ? `<a href="${site.link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-blue-400 hover:text-purple-300 font-semibold hover:underline visit-link text-sm sm:text-base" aria-label="Visit ${site.name}">Visit Site</a>` : '<span class="inline-block mt-3 text-xs sm:text-sm disabled-link">No link available</span>'}
+            `;
+            results.appendChild(div);
+          });
+          // Add "Load More" button if more sites are available and on homepage
+          if (limit !== null && sites.length > displayLimit) {
+            const loadMore = document.createElement("button");
+            loadMore.className = "action-button px-6 py-3 rounded-lg gradient-bg gradient-bg-hover text-white font-semibold text-center transition mx-auto block mt-6";
+            loadMore.textContent = "Load More";
+            loadMore.addEventListener("click", () => {
+              displayedCount += 9;
+              displayResults(sites, displayedCount);
+            });
+            results.appendChild(loadMore);
+          }
+        }
+        loading.classList.add("hidden");
+        results.classList.remove("opacity-50");
+      }, 300);
+    }
+
+    // Filter and display results
+    function filterResults({ type, value }) {
+      displayedCount = 9; // Reset displayed count
+      let filteredWebsites = websites;
+
+      if (type === "category") {
+        filteredWebsites = websites.filter(site => (site.categories || []).includes(value));
+        displayResults(filteredWebsites); // Show all results for category
+      } else if (value) {
+        filteredWebsites = websites.filter(
+          site =>
+            site.name.toLowerCase().includes(value) ||
+            site.description.toLowerCase().includes(value) ||
+            (site.categories || []).some(category => category.toLowerCase().includes(value))
+        );
+        displayResults(filteredWebsites); // Show all results for query
+      } else {
+        displayResults(websites, displayedCount); // Show 9 results on homepage
+      }
+    }
+
+    // Handle input for search and suggestions
+    let selectedIndex = -1;
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase().trim();
+      suggestions.innerHTML = "";
+      suggestions.classList.add("hidden");
+      selectedIndex = -1;
+      clearSearch.classList.toggle("hidden", !query);
+
+      if (query) {
+        const categorySuggestions = allCategories
+          .filter(category => category.toLowerCase().includes(query))
+          .map(category => ({ type: "category", value: category }))
+          .slice(0, 5);
+
+        if (categorySuggestions.length > 0) {
+          suggestions.classList.remove("hidden");
+          categorySuggestions.forEach((suggestion, index) => {
+            const li = document.createElement("li");
+            li.className = "p-3 suggestion-item cursor-pointer border-b border-slate-800 last:border-b-0";
+            li.textContent = suggestion.value;
+            li.setAttribute("role", "option");
+            li.setAttribute("aria-selected", index === selectedIndex);
+            li.style.animationDelay = `${index * 0.05}s`;
+            li.classList.add("ghostly-fade");
+            li.addEventListener("click", () => {
+              searchInput.value = suggestion.value;
+              suggestions.classList.add("hidden");
+              filterResults(suggestion);
+            });
+            suggestions.appendChild(li);
+          });
+        }
+      }
+
+      filterResults({ type: "query", value: query });
+    });
+
+    // Keyboard navigation for suggestions
+    searchInput.addEventListener("keydown", (e) => {
+      const items = suggestions.querySelectorAll(".suggestion-item");
+      if (!items.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % items.length;
+        updateSelection(items);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        updateSelection(items);
+      } else if (e.key === "Enter" && selectedIndex >= 0) {
+        e.preventDefault();
+        searchInput.value = items[selectedIndex].textContent;
+        suggestions.classList.add("hidden");
+        filterResults({ type: "category", value: searchInput.value });
+      } else if (e.key === "Enter") {
+        const query = searchInput.value.toLowerCase().trim();
+        filterResults({ type: allCategories.includes(searchInput.value) ? "category" : "query", value: query });
+        suggestions.classList.add("hidden");
+      }
+    });
+
+    function updateSelection(items) {
+      items.forEach((item, index) => {
+        item.classList.toggle("bg-slate-800/50", index === selectedIndex);
+        item.setAttribute("aria-selected", index === selectedIndex);
+      });
+      if (selectedIndex >= 0) {
+        items[selectedIndex].scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    // Clear search button
+    clearSearch.addEventListener("click", () => {
+      searchInput.value = "";
+      suggestions.classList.add("hidden");
+      filterResults({ type: "query", value: "" });
+      clearSearch.classList.add("hidden");
+    });
+
+    // Display initial websites
+    displayResults(websites, displayedCount);
+    renderCategoryTags();
+
+    // Back to top button
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.remove("opacity-0", "translate-y-4");
+      } else {
+        backToTop.classList.add("opacity-0", "translate-y-4");
+      }
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Hamburger menu
+    hamburger.addEventListener("click", () => {
+      navbarLinks.classList.toggle("active");
+      hamburger.textContent = navbarLinks.classList.contains("active") ? "✕" : "☰";
+    });
+
+    // WhatsApp sharing function
+    function sharePage() {
+      const url = window.location.href;
+      const message = "Discover the Top AI Tools for 2025 at Webkit By Ahsan Labs! 🚀 " + url;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
